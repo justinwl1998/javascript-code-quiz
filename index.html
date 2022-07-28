@@ -1,2 +1,55 @@
+<!DOCTYPE html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="./assets/css/styles.css" />
+    </head>
+    <body>
+        <main>
+            <div class="scoreViewer">
+                <h2>View High Scores, probably</h2>
+            </div>
+            
+            <div class="timer">
+                <h2>Timer: <span id="timeLeft"></span></h2>
+            </div>
+
+            <div>
+                <h1>The main quiz window</h1>
+
+                <section class="buttonContainer">
+                    <button id="startButton">Start Game</button>
+                </section>
+
+                <section id="highScore">
+                    
+                </section>
+
+                <section class="question">
+                    <h1 id="questionText">Question: I teleported bread.</h1>
+                </section>
+                
+                <section id="answerSect">
+                    <ul id="answerList">
+                        <li>
+                            <button class="answer A">This</button>
+                        </li>
+                        <li>
+                            <button class="answer B">Should</button>
+                        </li>
+                        <li>
+                            <button class="answer C">Not</button>
+                        </li>
+                        <li>
+                            <button class="answer D">Be</button>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="rightWrong">
+                    <h1 id="cowrongMessage"></h1>
+                </section>
+            </div>
+        </main>
+        <script src="assets/js/script.js"></script>
+    </body>
 </html>

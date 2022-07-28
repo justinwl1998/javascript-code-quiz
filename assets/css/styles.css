@@ -1,0 +1,45 @@
+main {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+ul {
+    list-style: none;
+}
+
+.scoreViewer {
+    width: auto;
+    display: inline-block;
+    background: red;
+}
+
+.timer {
+    width: auto;
+    display: inline-block;
+    background: green;
+    float: right;
+}
+
+.buttonContainer {
+    margin: auto;
+    text-align: center;
+}
+
+main h2 {
+    display: inline;
+    width: auto;
+}
+
+.question {
+    visibility: hidden;
+}
+
+#answerSect {
+    visibility: hidden;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+#rightWrong {
+    visibility: hidden;
+}

@@ -15,26 +15,35 @@ var highScoreEl = document.querySelector("#highScore");
 var score = 0;
 var timeLeft;
 var highScores = [];
+var timeInterval;
 
-// This is a terrible implementation of random questions, but this challenge has forced my hand
+// This is a terrible implementation of a questions list, but this challenge has forced my hand
 var questionIndex; // Variable that corresponds to question's index in the list
 var questionList = [
-    "What is the first letter of the alphabet?",
-    "What is the air speed of an unladen swallow?",
-    "What is used to hold values in Javascript?",
+    "Which is a valid comparison operator used in Javascript?",
+    "What is used to hold true or false values?",
+    "What are the containers used to hold values in Javascript called?",
     "Commonly used data types do not include:",
     "The condition in an if/else statement is enclosed with: ",
-    "Arrays in Javascript can be used to store: "
+    "Arrays in Javascript can be used to store: ",
+    "A very useful tool used during development and debugging and printing content to the debugger is:",
+    "What do you use to hold data that persists after the page is exited?",
+    "How do you create an HTML element in Javascript?",
+    "What do you use to select elements in Javascript?"
 ];
 
 // Each index correponds to a list of answers for that question
 var answerList = [
-    ["A", "B", "C", "Excuse me, what?"],
-    ["I don't know?", "What kind?", "Precisely 5 km/h", "This isn't funny."],
+    ["===", "%", "/", "+"],
+    ["Strings", "Booleans", "Numbers", "Arrays"],
     ["Numbers", "Boxes", "Variables", "Cells"],
     ["Strings", "Booleans", "Alerts", "Numbers"],
     ["Quotes", "Curly braces", "Parentheses", "Square brackets"],
-    ["Numbers and strings", "Other arrays", "Booleans", "All of the above"]
+    ["Numbers and strings", "Other arrays", "Booleans", "All of the above"],
+    ["Javascript", "Terminal/bash", "For loops", "Console.log"],
+    ["Local storage", "Arrays", "Session storage", "Objects"],
+    ["makeElement", "createElement", "newElement", "addElement"],
+    ["getElementById", "getElementsByClassName", "querySelector", "All of the above"]
 ];
 
 console.log("Hello world. Goodbye.");
@@ -43,7 +52,7 @@ function countdown() {
     timeLeft = 60;
     document.querySelector("#timeLeft").textContent = timeLeft;
 
-    var timeInterval = setInterval(function() {
+    timeInterval = setInterval(function() {
         timeLeft--;
         //timerEl.children[0].textContent = timeLeft;
         document.querySelector("#timeLeft").textContent = timeLeft;
@@ -64,7 +73,7 @@ function showScoreEntry() {
     answerSectEl.setAttribute("style", "display: none;");
     console.log("Time's up, your score was: " + score);
 
-    highScoreEl.textContent = "Game over, man.";
+    highScoreEl.textContent = "Game over, your final score was: " + score;
     highScoreEl.setAttribute("style", "display: block;");
 
     var nameEntryEl = document.createElement("INPUT");
@@ -79,11 +88,18 @@ function showScoreEntry() {
     highScoreEl.appendChild(submitScoreEl);
 }
 
-function getRandomQuestion() {
-    questionIndex = Math.floor(Math.random() * questionList.length);
+function getNextQuestion() {
+    if (questionIndex === 9) {
+        clearInterval(timeInterval);
+        document.querySelector("#timeLeft").textContent = "0";
+
+        showScoreEntry();
+        return;
+    }
+
+    questionIndex++;
     questionText.textContent = questionList[questionIndex];
 
-    // I would randomze the order of answers, but I shouldn't make something that complex... yet.
     for (var i = 0; i < answerList[questionIndex].length; i++) {
         answerListEl.children[i].children[0].textContent = answerList[questionIndex][i];
     }
@@ -94,7 +110,7 @@ function checkAnswer(ans) {
     // Whenever a new question is added, change this switch case to account for it. This is incredibly scuffed, but I don't have time to think of a better implementation
     switch(ans) {
         case 0:
-            if (questionIndex === 0) {
+            if (questionIndex === 0 || questionIndex === 7) {
                 // this is correct, make a function that handles correct and wrong answers
                 updateQuiz(true);
                 break;
@@ -102,7 +118,7 @@ function checkAnswer(ans) {
             updateQuiz(false);
             break;
         case 1:
-            if (questionIndex === 1) {
+            if (questionIndex === 1 || questionIndex === 8) {
                 updateQuiz(true);
                 break;
             }
@@ -116,7 +132,7 @@ function checkAnswer(ans) {
             updateQuiz(false);
             break;
         case 3:
-            if (questionIndex === 5) {
+            if (questionIndex === 5 || questionIndex === 6 || questionIndex === 9) {
                 updateQuiz(true);
                 break;
             }
@@ -143,8 +159,8 @@ function updateQuiz(isRight) {
         document.querySelector("#timeLeft").textContent = timeLeft;
     }
 
-    //get another question
-    getRandomQuestion();
+    //get next question
+    getNextQuestion();
 
     // also clear the message
     setTimeout(function() {
@@ -207,7 +223,13 @@ function init() {
     }
     else {
         console.log("There's some scores.");
-        highScores = JSON.parse(localStorage.getItem("scores"));
+        if (localStorage.getItem("scores") === '') {
+            // This prevents a syntax error from being raised, due to JSON.parse not liking empty strings
+            return;
+        }
+        else {
+            highScores = JSON.parse(localStorage.getItem("scores"));
+        }
     }
 }
 
@@ -220,8 +242,9 @@ document.addEventListener("click", function(event) {
         startButtonEl.disabled = true;
         startButtonEl.setAttribute("style", "visibility: hidden;");
 
-        // reset score
+        // reset score and starting question
         score = 0;
+        questionIndex = -1;
 
         // Make the game elements visible when starting
         questionEl.setAttribute("style", "visibility: visible;")
@@ -231,7 +254,7 @@ document.addEventListener("click", function(event) {
         countdown();
 
         //Get the first question
-        getRandomQuestion();
+        getNextQuestion();
 
         return;
     }

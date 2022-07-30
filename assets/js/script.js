@@ -23,7 +23,8 @@ var questionList = [
     "What is the air speed of an unladen swallow?",
     "What is used to hold values in Javascript?",
     "Commonly used data types do not include:",
-    "The condition in an if/else statement is enclosed with: "
+    "The condition in an if/else statement is enclosed with: ",
+    "Arrays in Javascript can be used to store: "
 ];
 
 // Each index correponds to a list of answers for that question
@@ -32,7 +33,8 @@ var answerList = [
     ["I don't know?", "What kind?", "Precisely 5 km/h", "This isn't funny."],
     ["Numbers", "Boxes", "Variables", "Cells"],
     ["Strings", "Booleans", "Alerts", "Numbers"],
-    ["Quotes", "Curly braces", "Parentheses", "Square brackets"]
+    ["Quotes", "Curly braces", "Parentheses", "Square brackets"],
+    ["Numbers and strings", "Other arrays", "Booleans", "All of the above"]
 ];
 
 console.log("Hello world. Goodbye.");
@@ -89,7 +91,7 @@ function getRandomQuestion() {
 
 function checkAnswer(ans) {
 
-    // This is so scuffed.
+    // Whenever a new question is added, change this switch case to account for it. This is incredibly scuffed, but I don't have time to think of a better implementation
     switch(ans) {
         case 0:
             if (questionIndex === 0) {
@@ -114,6 +116,10 @@ function checkAnswer(ans) {
             updateQuiz(false);
             break;
         case 3:
+            if (questionIndex === 5) {
+                updateQuiz(true);
+                break;
+            }
             updateQuiz(false);
             break;
     }
@@ -153,7 +159,7 @@ function showHighScores() {
 
     console.log(document.getElementById("highScore").style.display)
 
-    if (document.getElementById("highScore").style.display === "") {
+    if (highScoreEl.style.display === "" || highScoreEl.style.display === "none") {
         console.log("Reveal!");
         highScoreEl.setAttribute("style", "display: block");
     }
@@ -172,7 +178,9 @@ function showHighScores() {
         highScoreEl.appendChild(scoreListEl);
     }
     else {
-        highScoreEl.textContent = "No high scores available.";
+        var newP = document.createElement("p");
+        newP.textContent = "No high scores available.";
+        highScoreEl.appendChild(newP);
     }
 
     // add button to hide high score table and re-enable the start button
@@ -210,6 +218,7 @@ document.addEventListener("click", function(event) {
         console.log("Start the game already!!!!");
         isRunning = true;
         startButtonEl.disabled = true;
+        startButtonEl.setAttribute("style", "visibility: hidden;");
 
         // reset score
         score = 0;
@@ -228,6 +237,11 @@ document.addEventListener("click", function(event) {
     }
 
     if (element.matches("#viewScores")) {
+        //stop game if it's done in the middle of one
+
+        startButtonEl.setAttribute("style", "visibility: hidden;");
+        startButtonEl.disabled = true;
+
         showHighScores();
         return;
     }
@@ -268,6 +282,16 @@ document.addEventListener("click", function(event) {
         localStorage.removeItem("scores");
 
         showHighScores();
+        return;
+    }
+
+    if (element.matches("#backButton")) {
+        //clear the high score table
+        highScoreEl.innerHTML = "";
+        highScoreEl.setAttribute("style", "display: none;");
+        startButtonEl.setAttribute("style", "visibility: visible;");
+        startButtonEl.disabled = false;
+
         return;
     }
 });

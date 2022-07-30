@@ -8,21 +8,31 @@ var answerSectEl = document.querySelector("#answerSect");
 var answerListEl = document.querySelector("#answerList");
 var rightWrongEl = document.querySelector("#rightWrong");
 var cowrongMessEl = document.querySelector('#cowrongMessage');
+var highScoreEl = document.querySelector("#highScore");
 
 //var timerEl = document.querySelector(".timer");
 
 var score = 0;
 var timeLeft;
+var highScores = [];
 
 // This is a terrible implementation of random questions, but this challenge has forced my hand
 var questionIndex; // Variable that corresponds to question's index in the list
-var questionList = ["What is the first letter of the alphabet?",
-    "What is the air speed of an unladen swallow?"];
+var questionList = [
+    "What is the first letter of the alphabet?",
+    "What is the air speed of an unladen swallow?",
+    "What is used to hold values in Javascript?",
+    "Commonly used data types do not include:",
+    "The condition in an if/else statement is enclosed with: "
+];
 
 // Each index correponds to a list of answers for that question
 var answerList = [
     ["A", "B", "C", "Excuse me, what?"],
-    ["I don't know?", "What kind?", "Precisely 5 km/h", "This isn't funny."]
+    ["I don't know?", "What kind?", "Precisely 5 km/h", "This isn't funny."],
+    ["Numbers", "Boxes", "Variables", "Cells"],
+    ["Strings", "Booleans", "Alerts", "Numbers"],
+    ["Quotes", "Curly braces", "Parentheses", "Square brackets"]
 ];
 
 console.log("Hello world. Goodbye.");
@@ -40,9 +50,31 @@ function countdown() {
             console.log("Alright, stop.");
             clearInterval(timeInterval);
             document.querySelector("#timeLeft").textContent = "0";
+
             // stop the game and show score entry
+            showScoreEntry();
         }
     }, 1000);
+}
+
+function showScoreEntry() {
+    questionEl.setAttribute("style", "display: none;");
+    answerSectEl.setAttribute("style", "display: none;");
+    console.log("Time's up, your score was: " + score);
+
+    highScoreEl.textContent = "Game over, man.";
+    highScoreEl.setAttribute("style", "display: block;");
+
+    var nameEntryEl = document.createElement("INPUT");
+    nameEntryEl.setAttribute("id", "nameEntry");
+    nameEntryEl.setAttribute("type", "text");
+    nameEntryEl.setAttribute("maxLength", "3");
+    highScoreEl.appendChild(nameEntryEl);
+
+    var submitScoreEl = document.createElement("button");
+    submitScoreEl.textContent = "Submit Score";
+    submitScoreEl.setAttribute("id", "submitScore")
+    highScoreEl.appendChild(submitScoreEl);
 }
 
 function getRandomQuestion() {
@@ -56,7 +88,6 @@ function getRandomQuestion() {
 }
 
 function checkAnswer(ans) {
-    console.log("This ain't finished yet!");
 
     // This is so scuffed.
     switch(ans) {
@@ -76,6 +107,10 @@ function checkAnswer(ans) {
             updateQuiz(false);
             break;
         case 2:
+            if (questionIndex === 2 || questionIndex === 3 || questionIndex === 4) {
+                updateQuiz(true);
+                break;
+            }
             updateQuiz(false);
             break;
         case 3:
@@ -96,6 +131,9 @@ function updateQuiz(isRight) {
         console.log("WROG");
         cowrongMessEl.textContent = "Wrong!"
         timeLeft -= 30;
+        if (timeLeft < 0) {
+            timeLeft = 0;
+        }
         document.querySelector("#timeLeft").textContent = timeLeft;
     }
 
@@ -103,10 +141,66 @@ function updateQuiz(isRight) {
     getRandomQuestion();
 
     // also clear the message
-    var messageClear = setTimeout(function() {
+    setTimeout(function() {
         rightWrongEl.setAttribute("style", "visibility: hidden;");
         cowrongMessEl.textContent = "";
     }, 1000);
+}
+
+function showHighScores() {
+    console.log("This is yet to be finished.");
+    highScoreEl.innerHTML = "";
+
+    console.log(document.getElementById("highScore").style.display)
+
+    if (document.getElementById("highScore").style.display === "") {
+        console.log("Reveal!");
+        highScoreEl.setAttribute("style", "display: block");
+    }
+
+    //clear high scores or any other elements and make a list of the high scores in local storage
+    if (highScores.length > 0) {
+        scoreListEl = document.createElement("ol");
+
+        for (var i = 0; i < highScores.length; i++) {
+            var listEl = document.createElement("li");
+            listEl.textContent = highScores[i].name + " - " + highScores[i].hiScore;
+
+            scoreListEl.appendChild(listEl);
+        }
+
+        highScoreEl.appendChild(scoreListEl);
+    }
+    else {
+        highScoreEl.textContent = "No high scores available.";
+    }
+
+    // add button to hide high score table and re-enable the start button
+    var backButtonEl = document.createElement("button");
+    backButtonEl.textContent = "Back"
+    backButtonEl.setAttribute("id", "backButton");
+
+    // add button that also clears high scores
+    var clearButtonEl = document.createElement("button");
+    clearButtonEl.textContent = "Clear scores"
+    clearButtonEl.setAttribute("id", "clearButton");
+
+    highScoreEl.appendChild(backButtonEl);
+    highScoreEl.appendChild(clearButtonEl);
+}
+
+function init() {
+    // get high scores
+    //var highScores = JSON.parse(localStorage.getItem("scores"));
+    
+    if (localStorage.getItem("scores") === null) {
+        console.log("No scores stored! Making local storage...")
+        localStorage.setItem("scores", highScores);
+    }
+    else {
+        console.log("There's some scores.");
+        highScores = JSON.parse(localStorage.getItem("scores"));
+    }
 }
 
 document.addEventListener("click", function(event) {
@@ -133,11 +227,48 @@ document.addEventListener("click", function(event) {
         return;
     }
 
+    if (element.matches("#viewScores")) {
+        showHighScores();
+        return;
+    }
+
     if (element.matches(".answer")) {
-        console.log("Picked an answer, that answer being: " + element.textContent + " internally at index: " + answerList[questionIndex].indexOf(element.textContent));
 
         // check if selected answer is right
         checkAnswer(answerList[questionIndex].indexOf(element.textContent));
+        return;
+    }
+
+    if (element.matches("#submitScore")) {
+        let newName = document.getElementById("nameEntry").value;
+
+        let newScore = {name: newName, hiScore: score};
+        console.log(newScore);
+        console.log(JSON.stringify(newScore));
+
+        // insert score and sort
+        highScores.push(newScore);
+
+        highScores.sort((a,b) => {
+            return b.hiScore - a.hiScore;
+        })
+
+        console.log("Testing local storage adding")
+        localStorage.setItem("scores", JSON.stringify(highScores));
+
+        //after saving score, reveal high score table
+        showHighScores();
+
+        return;
+    }
+
+    if (element.matches("#clearButton")) {
+        console.log("This should clear the scores.");
+        highScores.splice(0, highScores.length);
+        localStorage.removeItem("scores");
+
+        showHighScores();
+        return;
     }
 });
 
@@ -154,3 +285,5 @@ document.addEventListener("click", function(event) {
     }
 
 });*/
+
+init();

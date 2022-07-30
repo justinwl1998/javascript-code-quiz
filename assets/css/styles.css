@@ -15,7 +15,6 @@ ul {
 
 .timer {
     width: auto;
-    display: inline-block;
     background: green;
     float: right;
 }
@@ -42,4 +41,16 @@ main h2 {
 
 #rightWrong {
     visibility: hidden;
+}
+
+#highScore {
+    display: none;
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+#highScore * {
+    margin: 2%;
+    list-style-position: inside;
 }

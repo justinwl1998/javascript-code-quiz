@@ -46,8 +46,6 @@ var answerList = [
     ["getElementById", "getElementsByClassName", "querySelector", "All of the above"]
 ];
 
-console.log("Hello world. Goodbye.");
-
 function countdown() {
     timeLeft = 60;
     document.querySelector("#timeLeft").textContent = timeLeft;
@@ -58,7 +56,6 @@ function countdown() {
         document.querySelector("#timeLeft").textContent = timeLeft;
 
         if (timeLeft <= 0) {
-            console.log("Alright, stop.");
             clearInterval(timeInterval);
             document.querySelector("#timeLeft").textContent = "0";
 
@@ -69,9 +66,10 @@ function countdown() {
 }
 
 function showScoreEntry() {
+    isRunning = false;
+
     questionEl.setAttribute("style", "display: none;");
     answerSectEl.setAttribute("style", "display: none;");
-    console.log("Time's up, your score was: " + score);
 
     highScoreEl.textContent = "Game over, your final score was: " + score;
     highScoreEl.setAttribute("style", "display: block;");
@@ -145,12 +143,10 @@ function updateQuiz(isRight) {
     rightWrongEl.setAttribute("style", "visibility: visible;");
     if (isRight) {
         score++;
-        console.log("Correct!")
         cowrongMessEl.textContent = "Correct!"
     }
     else {
         // decrease time
-        console.log("WROG");
         cowrongMessEl.textContent = "Wrong!"
         timeLeft -= 30;
         if (timeLeft < 0) {
@@ -170,13 +166,9 @@ function updateQuiz(isRight) {
 }
 
 function showHighScores() {
-    console.log("This is yet to be finished.");
     highScoreEl.innerHTML = "";
 
-    console.log(document.getElementById("highScore").style.display)
-
     if (highScoreEl.style.display === "" || highScoreEl.style.display === "none") {
-        console.log("Reveal!");
         highScoreEl.setAttribute("style", "display: block");
     }
 
@@ -215,10 +207,8 @@ function showHighScores() {
 
 function init() {
     // get high scores
-    //var highScores = JSON.parse(localStorage.getItem("scores"));
     
     if (localStorage.getItem("scores") === null) {
-        console.log("No scores stored! Making local storage...")
         localStorage.setItem("scores", highScores);
     }
     else {
@@ -260,7 +250,13 @@ document.addEventListener("click", function(event) {
     }
 
     if (element.matches("#viewScores")) {
+        if (isRunning) {
+            alert("You can't view scores while the game is running!");
+            return;
+        }
         //stop game if it's done in the middle of one
+        //clearInterval(timeInterval);
+
 
         startButtonEl.setAttribute("style", "visibility: hidden;");
         startButtonEl.disabled = true;
@@ -290,7 +286,6 @@ document.addEventListener("click", function(event) {
             return b.hiScore - a.hiScore;
         })
 
-        console.log("Testing local storage adding")
         localStorage.setItem("scores", JSON.stringify(highScores));
 
         //after saving score, reveal high score table
@@ -300,7 +295,6 @@ document.addEventListener("click", function(event) {
     }
 
     if (element.matches("#clearButton")) {
-        console.log("This should clear the scores.");
         highScores.splice(0, highScores.length);
         localStorage.removeItem("scores");
 

@@ -16,7 +16,11 @@ ul {
 .scoreViewer {
     width: auto;
     display: inline-block;
-    background: red;
+    color: purple;
+}
+
+.scoreViewer:hover {
+    color:aqua;
 }
 
 .center {
@@ -25,7 +29,6 @@ ul {
 
 .timer {
     width: auto;
-    background: green;
     float: right;
 }
 
@@ -49,10 +52,23 @@ main h2 {
     margin-right: 5%;
 }
 
-#answerSect #answerList li button {
-    font-size: 24px;
+button {
+    background-color: purple;
+    color: white;
+    border-radius: 10px;
     margin-bottom: 1%;
     margin-top: 1%;
+    font-size: 24px;
+    border: none;
+    border-radius: 10px;
+    padding-left: 1%;
+}
+
+button:hover {
+    background-color: darkorchid;
+}
+
+#answerSect #answerList li button {
     width: 25%;
     text-align: left;
 }

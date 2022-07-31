@@ -1,4 +1,3 @@
-var hide = false;
 var isRunning = false;
 
 var startButtonEl = document.querySelector("#startButton");
@@ -9,8 +8,6 @@ var answerListEl = document.querySelector("#answerList");
 var rightWrongEl = document.querySelector("#rightWrong");
 var cowrongMessEl = document.querySelector('#cowrongMessage');
 var highScoreEl = document.querySelector("#highScore");
-
-//var timerEl = document.querySelector(".timer");
 
 var score = 0;
 var timeLeft;
@@ -52,7 +49,6 @@ function countdown() {
 
     timeInterval = setInterval(function() {
         timeLeft--;
-        //timerEl.children[0].textContent = timeLeft;
         document.querySelector("#timeLeft").textContent = timeLeft;
 
         if (timeLeft <= 0) {
@@ -68,6 +64,7 @@ function countdown() {
 function showScoreEntry() {
     isRunning = false;
 
+    // Hide the question and answer elements to make room for the score entry
     questionEl.setAttribute("style", "display: none;");
     answerSectEl.setAttribute("style", "display: none;");
 
@@ -109,7 +106,6 @@ function checkAnswer(ans) {
     switch(ans) {
         case 0:
             if (questionIndex === 0 || questionIndex === 7) {
-                // this is correct, make a function that handles correct and wrong answers
                 updateQuiz(true);
                 break;
             }
@@ -148,7 +144,7 @@ function updateQuiz(isRight) {
     else {
         // decrease time
         cowrongMessEl.textContent = "Wrong!"
-        timeLeft -= 30;
+        timeLeft -= 10;
         if (timeLeft < 0) {
             timeLeft = 0;
         }
@@ -206,12 +202,12 @@ function showHighScores() {
 }
 
 function init() {
-    // get high scores
-    
+
+    // If there is no scores in localStorage, make it
     if (localStorage.getItem("scores") === null) {
         localStorage.setItem("scores", highScores);
     }
-    else {
+    else { // Otherwise, take it and put it in the internal highScores array
         console.log("There's some scores.");
         if (localStorage.getItem("scores") === '') {
             // This prevents a syntax error from being raised, due to JSON.parse not liking empty strings
@@ -250,12 +246,12 @@ document.addEventListener("click", function(event) {
     }
 
     if (element.matches("#viewScores")) {
+
+        // This is a corner case, but players probably shouldn't be viewing the high scores while they're taking the quiz.
         if (isRunning) {
             alert("You can't view scores while the game is running!");
             return;
         }
-        //stop game if it's done in the middle of one
-        //clearInterval(timeInterval);
 
 
         startButtonEl.setAttribute("style", "visibility: hidden;");
@@ -298,12 +294,13 @@ document.addEventListener("click", function(event) {
         highScores.splice(0, highScores.length);
         localStorage.removeItem("scores");
 
+        // update the high score table to show no scores
         showHighScores();
         return;
     }
 
     if (element.matches("#backButton")) {
-        //clear the high score table
+        //hide the high score table
         highScoreEl.innerHTML = "";
         highScoreEl.setAttribute("style", "display: none;");
         startButtonEl.setAttribute("style", "visibility: visible;");
@@ -312,19 +309,5 @@ document.addEventListener("click", function(event) {
         return;
     }
 });
-
-//DEBUG
-
-/*document.addEventListener("keydown", function() {
-    if (!hide) {
-        answerListEl.setAttribute("style", "visibility: hidden;");
-        hide = true;
-    }
-    else {
-        answerListEl.setAttribute("style", "visibility: visible;");
-        hide = false;
-    }
-
-});*/
 
 init();

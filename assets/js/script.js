@@ -233,6 +233,7 @@ document.addEventListener("click", function(event) {
         questionIndex = -1;
 
         // Make the game elements visible when starting
+        document.getElementById("blurb").setAttribute("style", "display: none;");
         questionEl.setAttribute("style", "visibility: visible;")
         answerSectEl.setAttribute("style", "visibility: visible;")
 
@@ -255,6 +256,7 @@ document.addEventListener("click", function(event) {
 
 
         startButtonEl.setAttribute("style", "visibility: hidden;");
+        document.getElementById("blurb").setAttribute("style", "display: none;");
         startButtonEl.disabled = true;
 
         showHighScores();
@@ -304,6 +306,7 @@ document.addEventListener("click", function(event) {
         highScoreEl.innerHTML = "";
         highScoreEl.setAttribute("style", "display: none;");
         startButtonEl.setAttribute("style", "visibility: visible;");
+        document.getElementById("blurb").setAttribute("style", "display: block;");
         startButtonEl.disabled = false;
 
         return;
